@@ -38,22 +38,48 @@ public class PolygonGenerator : MonoBehaviour
 
     private void GenerateTerrain()
     {
-        _blocks = new byte[10, 10];
+        _blocks = new byte[96, 128];
 
         for(int px = 0; px < _blocks.GetLength(0); px++)
         {
-            for(int py = 0; py < _blocks.GetLength(1); py++)
+            int stone = Noise(px, 0, 80, 15, 1);
+            stone += Noise(px, 0, 50, 30, 1);
+            stone += Noise(px, 0, 10, 10, 1);
+            stone += 75;
+
+            print(stone);
+
+            int dirt = Noise(px, 0, 100, 35, 1);
+            dirt += Noise(px, 0, 50, 30, 1);
+            dirt += 75;
+
+            for (int py = 0; py < _blocks.GetLength(1); py++)
             {
-                if(py == 5)
+                if (py < stone)
+                {
+                    _blocks[px, py] = 1;
+
+                    if(Noise(px,py,12,16,1) > 10)
+                    {
+                        _blocks[px, py] = 2;
+                    }
+
+                    if(Noise(px,py * 2, 16, 14, 1) > 10)
+                    {
+                        _blocks[px, py] = 0;
+                    }
+                }
+                else if (py < dirt)
                 {
                     _blocks[px, py] = 2;
                 }
-                else if(py < 5)
-                {
-                    _blocks[px, py] = 1;
-                }
             }
         }
+    }
+
+    private int Noise(int x, int y, float scale, float magnitude, float exponent)
+    {
+        return (int)(Mathf.Pow((Mathf.PerlinNoise(x / scale, y / scale) * magnitude), exponent));
     }
 
     private void GenerateSquare(int x, int y, Vector2 texture)
