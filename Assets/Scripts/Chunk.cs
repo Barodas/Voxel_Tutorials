@@ -11,30 +11,101 @@ public class Chunk : MonoBehaviour
     private float tUnit = 0.25f;
     private Vector2 tStone = new Vector2(1, 0);
     private Vector2 tGrass = new Vector2(0, 1);
+    private Vector2 tGrassTop = new Vector2(1, 1);
 
     private Mesh _mesh;
     private MeshCollider _col;
 
     private int _faceCount;
 
-	void Start ()
+    public GameObject worldGO;
+    private World world;
+
+    public int chunkSize = 16;
+
+    public int chunkX;
+    public int chunkY;
+    public int chunkZ;
+
+    void Start ()
     {
+        world = worldGO.GetComponent<World>();
+
         _mesh = GetComponent<MeshFilter>().mesh;
         _col = GetComponent<MeshCollider>();
 
-        CubeTop(0, 0, 0, 0);
-        CubeNorth(0, 0, 0, 0);
-        CubeEast(0, 0, 0, 0);
-        CubeSouth(0, 0, 0, 0);
-        CubeWest(0, 0, 0, 0);
-        CubeBot(0, 0, 0, 0);
-        UpdateMesh();
+        GenerateMesh();
 	}
 
 	void Update ()
     {
 		
 	}
+
+    private byte Block(int x, int y, int z)
+    {
+        return world.Block(x + chunkX, y + chunkY, z + chunkZ);
+    }
+
+    private void GenerateMesh()
+    {
+        for (int x = 0; x < chunkSize; x++)
+        {
+            for (int y = 0; y < chunkSize; y++)
+            {
+                for (int z = 0; z < chunkSize; z++)
+                {
+                    //This code will run for every block in the chunk
+                    if (Block(x, y, z) != 0)
+                    {
+                        //If the block is solid
+                        if (Block(x, y + 1, z) == 0)
+                        {
+                            //Block above is air
+                            CubeTop(x, y, z, Block(x, y, z));
+                        }
+
+                        if (Block(x, y - 1, z) == 0)
+                        {
+                            //Block below is air
+                            CubeBot(x, y, z, Block(x, y, z));
+
+                        }
+
+                        if (Block(x + 1, y, z) == 0)
+                        {
+                            //Block east is air
+                            CubeEast(x, y, z, Block(x, y, z));
+
+                        }
+
+                        if (Block(x - 1, y, z) == 0)
+                        {
+                            //Block west is air
+                            CubeWest(x, y, z, Block(x, y, z));
+
+                        }
+
+                        if (Block(x, y, z + 1) == 0)
+                        {
+                            //Block north is air
+                            CubeNorth(x, y, z, Block(x, y, z));
+
+                        }
+
+                        if (Block(x, y, z - 1) == 0)
+                        {
+                            //Block south is air
+                            CubeSouth(x, y, z, Block(x, y, z));
+                        }
+                    }
+                }
+            }
+        }
+
+        UpdateMesh();
+    }
+
 
     private void UpdateMesh()
     {
@@ -48,10 +119,13 @@ public class Chunk : MonoBehaviour
         _newUV.Clear();
         _newTris.Clear();
 
+        _col.sharedMesh = null;
+        _col.sharedMesh = _mesh;
+
         _faceCount = 0;
     }
 
-    void Cube(Vector2 texturePos)
+    private void Cube(Vector2 texturePos)
     {
         _newTris.Add(_faceCount * 4); //1
         _newTris.Add(_faceCount * 4 + 1); //2
@@ -75,8 +149,15 @@ public class Chunk : MonoBehaviour
         _newVerts.Add(new Vector3(x + 1, y, z));
         _newVerts.Add(new Vector3(x, y, z));
 
-        Vector2 texturePos;
-        texturePos = tStone;
+        Vector2 texturePos = new Vector2(0, 0);
+        if(Block(x,y,z) == 1)
+        {
+            texturePos = tStone;
+        }
+        else if(Block(x,y,z) == 2)
+        {
+            texturePos = tGrassTop;
+        }
         Cube(texturePos);
     }
 
@@ -87,8 +168,15 @@ public class Chunk : MonoBehaviour
         _newVerts.Add(new Vector3(x, y, z + 1));
         _newVerts.Add(new Vector3(x, y - 1, z + 1));
 
-        Vector2 texturePos;
-        texturePos = tStone;
+        Vector2 texturePos = new Vector2(0, 0);
+        if (Block(x, y, z) == 1)
+        {
+            texturePos = tStone;
+        }
+        else if (Block(x, y, z) == 2)
+        {
+            texturePos = tGrass;
+        }
         Cube(texturePos);
     }
 
@@ -99,8 +187,15 @@ public class Chunk : MonoBehaviour
         _newVerts.Add(new Vector3(x + 1, y, z + 1));
         _newVerts.Add(new Vector3(x + 1, y - 1, z + 1));
 
-        Vector2 texturePos;
-        texturePos = tStone;
+        Vector2 texturePos = new Vector2(0, 0);
+        if (Block(x, y, z) == 1)
+        {
+            texturePos = tStone;
+        }
+        else if (Block(x, y, z) == 2)
+        {
+            texturePos = tGrass;
+        }
         Cube(texturePos);
     }
 
@@ -111,8 +206,15 @@ public class Chunk : MonoBehaviour
         _newVerts.Add(new Vector3(x + 1, y, z));
         _newVerts.Add(new Vector3(x + 1, y - 1, z));
 
-        Vector2 texturePos;
-        texturePos = tStone;
+        Vector2 texturePos = new Vector2(0, 0);
+        if (Block(x, y, z) == 1)
+        {
+            texturePos = tStone;
+        }
+        else if (Block(x, y, z) == 2)
+        {
+            texturePos = tGrass;
+        }
         Cube(texturePos);
     }
 
@@ -123,8 +225,15 @@ public class Chunk : MonoBehaviour
         _newVerts.Add(new Vector3(x, y, z));
         _newVerts.Add(new Vector3(x, y - 1, z));
 
-        Vector2 texturePos;
-        texturePos = tStone;
+        Vector2 texturePos = new Vector2(0, 0);
+        if (Block(x, y, z) == 1)
+        {
+            texturePos = tStone;
+        }
+        else if (Block(x, y, z) == 2)
+        {
+            texturePos = tGrass;
+        }
         Cube(texturePos);
     }
 
@@ -135,8 +244,15 @@ public class Chunk : MonoBehaviour
         _newVerts.Add(new Vector3(x + 1, y - 1, z + 1));
         _newVerts.Add(new Vector3(x, y - 1, z + 1));
 
-        Vector2 texturePos;
-        texturePos = tStone;
+        Vector2 texturePos = new Vector2(0, 0);
+        if (Block(x, y, z) == 1)
+        {
+            texturePos = tStone;
+        }
+        else if (Block(x, y, z) == 2)
+        {
+            texturePos = tGrass;
+        }
         Cube(texturePos);
     }
 }
