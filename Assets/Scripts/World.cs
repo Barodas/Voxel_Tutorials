@@ -49,23 +49,7 @@ public class World : MonoBehaviour
 
         // Generate chunks
         chunks = new Chunk[Mathf.FloorToInt(worldX / chunkSize), Mathf.FloorToInt(worldY / chunkSize), Mathf.FloorToInt(WorldZ / chunkSize)];
-        for (int x = 0; x < chunks.GetLength(0); x++)
-        {
-            for (int y = 0; y < chunks.GetLength(1); y++)
-            {
-                for (int z = 0; z < chunks.GetLength(2); z++)
-                {
-                    GameObject newChunk = Instantiate(chunk, new Vector3(x * chunkSize - 0.5f, y * chunkSize + 0.5f, z * chunkSize - 0.5f), new Quaternion(0, 0, 0, 0)) as GameObject;
-                    chunks[x, y, z] = newChunk.GetComponent<Chunk>();
-
-                    chunks[x, y, z].worldGO = gameObject;
-                    chunks[x, y, z].chunkSize = chunkSize;
-                    chunks[x, y, z].chunkX = x * chunkSize;
-                    chunks[x, y, z].chunkY = y * chunkSize;
-                    chunks[x, y, z].chunkZ = z * chunkSize;
-                }
-            }
-        }
+        
     }
 
 	void Update ()
@@ -94,5 +78,28 @@ public class World : MonoBehaviour
             rValue = Mathf.Pow(rValue, power);
         }
         return (int)rValue;
+    }
+
+    public void GenerateColumn(int x, int z)
+    {
+        for (int y = 0; y < chunks.GetLength(1); y++)
+        {
+            GameObject newChunk = Instantiate(chunk, new Vector3(x * chunkSize - 0.5f, y * chunkSize + 0.5f, z * chunkSize - 0.5f), new Quaternion(0, 0, 0, 0)) as GameObject;
+            chunks[x, y, z] = newChunk.GetComponent<Chunk>();
+
+            chunks[x, y, z].worldGO = gameObject;
+            chunks[x, y, z].chunkSize = chunkSize;
+            chunks[x, y, z].chunkX = x * chunkSize;
+            chunks[x, y, z].chunkY = y * chunkSize;
+            chunks[x, y, z].chunkZ = z * chunkSize;      
+        }
+    }
+
+    public void UnloadColumn(int x, int z)
+    {
+        for (int y = 0; y < chunks.GetLength(1); y++)
+        {
+            Destroy(chunks[x, y, z].gameObject);
+        }
     }
 }

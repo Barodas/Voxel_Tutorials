@@ -7,6 +7,10 @@ public class ModifyTerrain : MonoBehaviour
     private World world;
     private GameObject cameraGO;
 
+    public float loadDistance = 32f;
+    public float unloadDistance = 48f;
+    private float chunkUpdateTimer = 1;
+
     private void Start()
     {
         world = gameObject.GetComponent<World>();
@@ -15,6 +19,16 @@ public class ModifyTerrain : MonoBehaviour
 
     private void Update()
     {
+        if(chunkUpdateTimer < 0)
+        {
+            LoadChunks(GameObject.FindGameObjectWithTag("Player").transform.position, loadDistance, unloadDistance);
+            chunkUpdateTimer = 1;
+        }
+        else
+        {
+            chunkUpdateTimer -= Time.deltaTime;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             ReplaceBlockCursor(0);
@@ -157,6 +171,32 @@ public class ModifyTerrain : MonoBehaviour
         if (z - (world.chunkSize * updateZ) == 15 && updateZ != world.chunks.GetLength(2) - 1)
         {
             world.chunks[updateX, updateY, updateZ + 1].update = true;
+        }
+    }
+
+    public void LoadChunks(Vector3 playerPos, float distToLoad, float distToUnload)
+    {
+        for (int x = 0; x < world.chunks.GetLength(0); x++)
+        {
+            for(int z = 0; z < world.chunks.GetLength(2); z++)
+            {
+                float dist = Vector2.Distance(new Vector2(x * world.chunkSize, z * world.chunkSize), new Vector2(playerPos.x, playerPos.z));
+
+                if(dist < distToLoad)
+                {
+                    if(world.chunks[x, 0, z] == null)
+                    {
+                        world.GenerateColumn(x, z);
+                    }
+                }
+                else if(dist > distToUnload)
+                {
+                    if(world.chunks[x,0,z] != null)
+                    {
+                        world.UnloadColumn(x, z);
+                    }
+                }
+            }
         }
     }
 }
