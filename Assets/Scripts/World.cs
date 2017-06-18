@@ -10,7 +10,7 @@ public class World : MonoBehaviour
     public int WorldZ = 16;
 
     public GameObject chunk;
-    public GameObject[,,] chunks;
+    public Chunk[,,] chunks;
     public int chunkSize = 16;
 
 	void Start ()
@@ -48,21 +48,21 @@ public class World : MonoBehaviour
         }
 
         // Generate chunks
-        chunks = new GameObject[Mathf.FloorToInt(worldX / chunkSize), Mathf.FloorToInt(worldY / chunkSize), Mathf.FloorToInt(WorldZ / chunkSize)];
+        chunks = new Chunk[Mathf.FloorToInt(worldX / chunkSize), Mathf.FloorToInt(worldY / chunkSize), Mathf.FloorToInt(WorldZ / chunkSize)];
         for (int x = 0; x < chunks.GetLength(0); x++)
         {
             for (int y = 0; y < chunks.GetLength(1); y++)
             {
                 for (int z = 0; z < chunks.GetLength(2); z++)
                 {
-                    chunks[x, y, z] = Instantiate(chunk, new Vector3(x * chunkSize, y * chunkSize, z * chunkSize), new Quaternion(0, 0, 0, 0)) as GameObject;
-                    Chunk newChunkScript = chunks[x, y, z].GetComponent<Chunk>();
+                    GameObject newChunk = Instantiate(chunk, new Vector3(x * chunkSize - 0.5f, y * chunkSize + 0.5f, z * chunkSize - 0.5f), new Quaternion(0, 0, 0, 0)) as GameObject;
+                    chunks[x, y, z] = newChunk.GetComponent<Chunk>();
 
-                    newChunkScript.worldGO = gameObject;
-                    newChunkScript.chunkSize = chunkSize;
-                    newChunkScript.chunkX = x * chunkSize;
-                    newChunkScript.chunkY = y * chunkSize;
-                    newChunkScript.chunkZ = z * chunkSize;
+                    chunks[x, y, z].worldGO = gameObject;
+                    chunks[x, y, z].chunkSize = chunkSize;
+                    chunks[x, y, z].chunkX = x * chunkSize;
+                    chunks[x, y, z].chunkY = y * chunkSize;
+                    chunks[x, y, z].chunkZ = z * chunkSize;
                 }
             }
         }
