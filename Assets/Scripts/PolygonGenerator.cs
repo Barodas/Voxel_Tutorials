@@ -19,7 +19,8 @@ public class PolygonGenerator : MonoBehaviour
     private Vector2 _tGrass = new Vector2(0, 1);
     private int squareCount;
 
-    public byte[,] _blocks;
+    public byte[,] blocks;
+    public bool update = false;
 
 	void Start ()
     {
@@ -33,14 +34,19 @@ public class PolygonGenerator : MonoBehaviour
 
 	void Update ()
     {
-		
+		if(update)
+        {
+            BuildMesh();
+            UpdateMesh();
+            update = false;
+        }
 	}
 
     private void GenerateTerrain()
     {
-        _blocks = new byte[96, 128];
+        blocks = new byte[96, 128];
 
-        for(int px = 0; px < _blocks.GetLength(0); px++)
+        for(int px = 0; px < blocks.GetLength(0); px++)
         {
             int stone = Noise(px, 0, 80, 15, 1);
             stone += Noise(px, 0, 50, 30, 1);
@@ -53,25 +59,25 @@ public class PolygonGenerator : MonoBehaviour
             dirt += Noise(px, 0, 50, 30, 1);
             dirt += 75;
 
-            for (int py = 0; py < _blocks.GetLength(1); py++)
+            for (int py = 0; py < blocks.GetLength(1); py++)
             {
                 if (py < stone)
                 {
-                    _blocks[px, py] = 1;
+                    blocks[px, py] = 1;
 
                     if(Noise(px,py,12,16,1) > 10)
                     {
-                        _blocks[px, py] = 2;
+                        blocks[px, py] = 2;
                     }
 
                     if(Noise(px,py * 2, 16, 14, 1) > 10)
                     {
-                        _blocks[px, py] = 0;
+                        blocks[px, py] = 0;
                     }
                 }
                 else if (py < dirt)
                 {
-                    _blocks[px, py] = 2;
+                    blocks[px, py] = 2;
                 }
             }
         }
@@ -169,18 +175,18 @@ public class PolygonGenerator : MonoBehaviour
 
     private void BuildMesh()
     {
-        for (int px = 0; px < _blocks.GetLength(0); px++)
+        for (int px = 0; px < blocks.GetLength(0); px++)
         {
-            for (int py = 0; py < _blocks.GetLength(1); py++)
+            for (int py = 0; py < blocks.GetLength(1); py++)
             {
-                if(_blocks[px,py] != 0) // If block is not air
+                if(blocks[px,py] != 0) // If block is not air
                 {
                     GenerateCollider(px, py);
-                    if (_blocks[px, py] == 1)
+                    if (blocks[px, py] == 1)
                     {
                         GenerateSquare(px, py, _tStone);
                     }
-                    else if (_blocks[px, py] == 2)
+                    else if (blocks[px, py] == 2)
                     {
                         GenerateSquare(px, py, _tGrass);
                     }
@@ -214,11 +220,11 @@ public class PolygonGenerator : MonoBehaviour
 
     private byte Block(int x, int y)
     {
-        if(x == -1 || x == _blocks.GetLength(0) || y == -1 || y == _blocks.GetLength(1))
+        if(x == -1 || x == blocks.GetLength(0) || y == -1 || y == blocks.GetLength(1))
         {
             return 1;
         }
 
-        return _blocks[x, y];
+        return blocks[x, y];
     }
 }

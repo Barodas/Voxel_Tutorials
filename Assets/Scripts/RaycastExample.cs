@@ -26,7 +26,10 @@ public class RaycastExample : MonoBehaviour
 
             Vector2 point = new Vector2(hit.point.x, hit.point.y);
             Vector2 normPoint = point + (new Vector2(hit.normal.x, hit.normal.y)) * -0.5f;
-            Debug.DrawLine(point, normPoint, Color.yellow);
+
+            //Debug.DrawLine(point, normPoint, Color.yellow);
+            tScript.blocks[Mathf.RoundToInt(point.x - 0.5f), Mathf.RoundToInt(point.y + 0.5f)] = 0;
+            tScript.update = true;
         }
         else
         {
