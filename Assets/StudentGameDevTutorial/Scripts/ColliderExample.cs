@@ -2,63 +2,66 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColliderExample : MonoBehaviour
+namespace SGDTutorial
 {
-    public GameObject terrain;
-    private PolygonGenerator tScript;
-    public int size = 4;
-    public bool circular = false;
+    public class ColliderExample : MonoBehaviour
+    {
+        public GameObject terrain;
+        private PolygonGenerator tScript;
+        public int size = 4;
+        public bool circular = false;
 
-	void Start ()
-    {
-        tScript = terrain.GetComponent<PolygonGenerator>();
-	}
-	
-	void Update ()
-    {
-        bool collision = false;
-        for(int x = 0; x < size; x++)
+        void Start()
         {
-            for(int y = 0; y < size; y++)
+            tScript = terrain.GetComponent<PolygonGenerator>();
+        }
+
+        void Update()
+        {
+            bool collision = false;
+            for (int x = 0; x < size; x++)
             {
-                if(circular)
+                for (int y = 0; y < size; y++)
                 {
-                    if(Vector2.Distance(new Vector2(x-(size/2),y-(size/2)), Vector2.zero) <= (size/3))
+                    if (circular)
                     {
-                        if(RemoveBlock(x-(size/2),y-(size/2)))
+                        if (Vector2.Distance(new Vector2(x - (size / 2), y - (size / 2)), Vector2.zero) <= (size / 3))
+                        {
+                            if (RemoveBlock(x - (size / 2), y - (size / 2)))
+                            {
+                                collision = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (RemoveBlock(x - (size / 2), y - (size / 2)))
                         {
                             collision = true;
                         }
                     }
                 }
-                else
+            }
+            if (collision)
+            {
+                tScript.update = true;
+            }
+        }
+
+        private bool RemoveBlock(float offsetX, float offsetY)
+        {
+            int x = Mathf.RoundToInt(transform.position.x + offsetX);
+            int y = Mathf.RoundToInt(transform.position.y + 1f + offsetY);
+
+            if (x < tScript.blocks.GetLength(0) && y < tScript.blocks.GetLength(1) && x >= 0 && y >= 0)
+            {
+                if (tScript.blocks[x, y] != 0)
                 {
-                    if(RemoveBlock(x-(size/2),y-(size/2)))
-                    {
-                        collision = true;
-                    }
+                    tScript.blocks[x, y] = 0;
+                    return true;
                 }
             }
+            return false;
         }
-        if(collision)
-        {
-            tScript.update = true;
-        }
-	}
-
-    private bool RemoveBlock(float offsetX, float offsetY)
-    {
-        int x = Mathf.RoundToInt(transform.position.x + offsetX);
-        int y = Mathf.RoundToInt(transform.position.y + 1f + offsetY);
-
-        if(x < tScript.blocks.GetLength(0) && y < tScript.blocks.GetLength(1) && x >= 0 && y >= 0)
-        {
-            if(tScript.blocks[x,y] != 0)
-            {
-                tScript.blocks[x, y] = 0;
-                return true;
-            }
-        }
-        return false;
     }
 }
