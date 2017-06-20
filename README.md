@@ -1,4 +1,6 @@
-# 2D_Tilebased_Sidescroll
-Creating a 2D block game similar to Terraria/Starbound
+# Voxel_Tutorials
+Repo for my progress following various voxel tutorials and similar experiments
 
-Initial project based on tutorials found on http://studentgamedev.blogspot.com.au
+Links to tutorials used in this repo:
+http://studentgamedev.blogspot.com.au
+http://alexstv.com/index.php/posts/unity-voxel-block-tutorial
