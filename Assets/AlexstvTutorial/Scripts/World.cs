@@ -23,6 +23,18 @@ namespace ASTutorial
             }
         }
 
+        private void UpdateIfEqual(int value1, int value2, WorldPos pos)
+        {
+            if(value1 == value2)
+            {
+                Chunk chunk = GetChunk(pos.x, pos.y, pos.z);
+                if(chunk != null)
+                {
+                    chunk.update = true;
+                }
+            }
+        }
+
         public void CreateChunk(int x, int y, int z)
         {
             WorldPos worldPos = new WorldPos(x, y, z);
@@ -85,6 +97,13 @@ namespace ASTutorial
             {
                 chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
                 chunk.update = true;
+
+                UpdateIfEqual(x - chunk.pos.x, 0, new WorldPos(x - 1, y, z));
+                UpdateIfEqual(x - chunk.pos.x, Chunk.chunkSize - 1, new WorldPos(x + 1, y, z));
+                UpdateIfEqual(y - chunk.pos.y, 0, new WorldPos(x, y - 1, z));
+                UpdateIfEqual(y - chunk.pos.y, Chunk.chunkSize - 1, new WorldPos(x, y + 1, z));
+                UpdateIfEqual(z - chunk.pos.z, 0, new WorldPos(x, y, z - 1));
+                UpdateIfEqual(z - chunk.pos.z, Chunk.chunkSize - 1, new WorldPos(x, y, z + 1));
             }
         }
 

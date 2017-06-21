@@ -47,7 +47,6 @@ namespace ASTutorial
             {
                 update = false;
                 UpdateChunk();
-                Debug.Log("UpdatingChunk");
             }
         }
 
