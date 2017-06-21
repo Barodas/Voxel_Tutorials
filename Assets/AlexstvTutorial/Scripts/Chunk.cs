@@ -34,6 +34,7 @@ namespace ASTutorial
                 }
             }
             _blocks[3, 5, 2] = new Block();
+            _blocks[4,5,2] = new BlockGrass();
             UpdateChunk();
             // End Example Chunk Code
         }
@@ -65,6 +66,15 @@ namespace ASTutorial
             _filter.mesh.Clear();
             _filter.mesh.vertices = meshData.vertices.ToArray();
             _filter.mesh.triangles = meshData.triangles.ToArray();
+            _filter.mesh.uv = meshData.uv.ToArray();
+            _filter.mesh.RecalculateNormals();
+
+            _col.sharedMesh = null;
+            Mesh mesh = new Mesh();
+            mesh.vertices = meshData.colVertices.ToArray();
+            mesh.triangles = meshData.colTriangles.ToArray();
+            mesh.RecalculateNormals();
+            _col.sharedMesh = mesh;
         }
     }
 }
