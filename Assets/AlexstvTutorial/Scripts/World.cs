@@ -8,6 +8,12 @@ namespace ASTutorial
     {
         public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
         public GameObject chunkPrefab;
+        public string worldName = "world";
+
+        public int newChunkX;
+        public int newChunkY;
+        public int newChunkZ;
+        public bool genChunk;
 
         private void Start()
         {
@@ -19,6 +25,25 @@ namespace ASTutorial
                     {
                         CreateChunk(x * 16, y * 16, z * 16);
                     }
+                }
+            }
+        }
+
+        private void Update()
+        {
+            if(genChunk)
+            {
+                genChunk = false;
+                WorldPos chunkPos = new WorldPos(newChunkX, newChunkY, newChunkZ);
+                Chunk chunk = null;
+
+                if(chunks.TryGetValue(chunkPos, out chunk))
+                {
+                    DestroyChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                }
+                else
+                {
+                    CreateChunk(chunkPos.x, chunkPos.y, chunkPos.z);
                 }
             }
         }
@@ -66,6 +91,9 @@ namespace ASTutorial
                 }
             }
             // End Example Chunk Population
+
+            newChunk.SetBlocksUnmodified();
+            Serialization.Load(newChunk);
         }
 
         public Chunk GetChunk(int x, int y, int z)
@@ -85,6 +113,7 @@ namespace ASTutorial
             Chunk chunk = null;
             if(chunks.TryGetValue(new WorldPos(x,y,z), out chunk))
             {
+                Serialization.SaveChunk(chunk);
                 Destroy(chunk.gameObject);
                 chunks.Remove(new WorldPos(x, y, z));
             }

@@ -9,7 +9,7 @@ namespace ASTutorial
     [RequireComponent(typeof(MeshCollider))]
     public class Chunk : MonoBehaviour
     {
-        private Block[,,] _blocks = new Block[chunkSize, chunkSize, chunkSize];
+        public Block[,,] blocks = new Block[chunkSize, chunkSize, chunkSize];
         private MeshFilter _filter;
         private MeshCollider _col;
 
@@ -24,19 +24,19 @@ namespace ASTutorial
             _col = GetComponent<MeshCollider>();
 
             //// Example Chunk Code
-            //_blocks = new Block[chunkSize, chunkSize, chunkSize];
+            //blocks = new Block[chunkSize, chunkSize, chunkSize];
             //for(int x = 0; x < chunkSize; x++)
             //{
             //    for(int y = 0; y < chunkSize; y++)
             //    {
             //        for(int z = 0; z < chunkSize; z++)
             //        {
-            //            _blocks[x, y, z] = new BlockAir();
+            //            blocks[x, y, z] = new BlockAir();
             //        }
             //    }
             //}
-            //_blocks[3, 5, 2] = new Block();
-            //_blocks[4,5,2] = new BlockGrass();
+            //blocks[3, 5, 2] = new Block();
+            //blocks[4,5,2] = new BlockGrass();
             //UpdateChunk();
             //// End Example Chunk Code
         }
@@ -54,7 +54,7 @@ namespace ASTutorial
         {
             if (InRange(x) && InRange(y) && InRange(z))
             {
-                _blocks[x, y, z] = block;
+                blocks[x, y, z] = block;
             }
             else
             {
@@ -66,7 +66,7 @@ namespace ASTutorial
         {
             if (InRange(x) && InRange(y) && InRange(z))
             {
-                return _blocks[x, y, z];
+                return blocks[x, y, z];
             }
             return world.GetBlock(pos.x + x, pos.y + y, pos.z + z);
         }
@@ -80,6 +80,14 @@ namespace ASTutorial
             return true;
         }
 
+        public void SetBlocksUnmodified()
+        {
+            foreach(Block block in blocks)
+            {
+                block.changed = false;
+            }
+        }
+
         private void UpdateChunk()
         {
             MeshData meshData = new MeshData();
@@ -90,7 +98,7 @@ namespace ASTutorial
                 {
                     for (int z = 0; z < chunkSize; z++)
                     {
-                        meshData = _blocks[x, y, z].BlockData(this, x, y, z, meshData);
+                        meshData = blocks[x, y, z].BlockData(this, x, y, z, meshData);
                     }
                 }
             }

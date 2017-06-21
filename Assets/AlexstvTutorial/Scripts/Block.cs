@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,9 +21,12 @@ namespace ASTutorial
         public int y;
     }
 
+    [Serializable]
     public class Block
     {
         private const float tileSize = 0.25f;
+
+        public bool changed = true;
 
         public Block()
         {
