@@ -10,43 +10,43 @@ namespace ASTutorial
         public GameObject chunkPrefab;
         public string worldName = "world";
 
-        public int newChunkX;
-        public int newChunkY;
-        public int newChunkZ;
-        public bool genChunk;
-
-        private void Start()
-        {
-            for (int x = -4; x < 4; x++)
-            {
-                for (int y = -1; y < 3; y++)
-                {
-                    for (int z = -4; z < 4; z++)
-                    {
-                        CreateChunk(x * 16, y * 16, z * 16);
-                    }
-                }
-            }
-        }
-
-        private void Update()
-        {
-            if(genChunk)
-            {
-                genChunk = false;
-                WorldPos chunkPos = new WorldPos(newChunkX, newChunkY, newChunkZ);
-                Chunk chunk = null;
-
-                if(chunks.TryGetValue(chunkPos, out chunk))
-                {
-                    DestroyChunk(chunkPos.x, chunkPos.y, chunkPos.z);
-                }
-                else
-                {
-                    CreateChunk(chunkPos.x, chunkPos.y, chunkPos.z);
-                }
-            }
-        }
+        //public int newChunkX;
+        //public int newChunkY;
+        //public int newChunkZ;
+        //public bool genChunk;
+        //
+        //private void Start()
+        //{
+        //    for (int x = -4; x < 4; x++)
+        //    {
+        //        for (int y = -1; y < 3; y++)
+        //        {
+        //            for (int z = -4; z < 4; z++)
+        //            {
+        //                CreateChunk(x * 16, y * 16, z * 16);
+        //            }
+        //        }
+        //    }
+        //}
+        //
+        //private void Update()
+        //{
+        //    if(genChunk)
+        //    {
+        //        genChunk = false;
+        //        WorldPos chunkPos = new WorldPos(newChunkX, newChunkY, newChunkZ);
+        //        Chunk chunk = null;
+        //
+        //        if(chunks.TryGetValue(chunkPos, out chunk))
+        //        {
+        //            DestroyChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+        //        }
+        //        else
+        //        {
+        //            CreateChunk(chunkPos.x, chunkPos.y, chunkPos.z);
+        //        }
+        //    }
+        //}
 
         private void UpdateIfEqual(int value1, int value2, WorldPos pos)
         {

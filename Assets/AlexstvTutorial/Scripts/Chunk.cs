@@ -14,7 +14,8 @@ namespace ASTutorial
         private MeshCollider _col;
 
         public static int chunkSize = 16;
-        public bool update = true;
+        public bool update = false;
+        public bool rendered;
         public World world;
         public WorldPos pos;
 
@@ -103,6 +104,7 @@ namespace ASTutorial
                 }
             }
             RenderMesh(meshData);
+            rendered = true;
         }
 
         private void RenderMesh(MeshData meshData)
