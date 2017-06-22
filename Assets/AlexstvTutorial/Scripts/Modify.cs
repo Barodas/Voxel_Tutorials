@@ -15,7 +15,7 @@ namespace ASTutorial
                 RaycastHit hit;
                 if(Physics.Raycast(transform.position, transform.forward, out hit, 100))
                 {
-                    Terrain.SetBlock(hit, new BlockAir());
+                    EditTerrain.SetBlock(hit, new BlockAir());
                 }
             }
 

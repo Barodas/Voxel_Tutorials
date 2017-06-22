@@ -18,17 +18,23 @@ namespace ASTutorial
 
         public override bool Equals(object obj)
         {
-            if (!(obj is WorldPos))
+            if(GetHashCode() == obj.GetHashCode())
             {
-                return false;
+                return true;
             }
+            return false;
+        }
 
-            WorldPos pos = (WorldPos)obj;
-            if(pos.x != x || pos.y != y || pos.z != z)
+        public override int GetHashCode()
+        {
+            unchecked
             {
-                return false;
+                int hash = 47;
+                hash = hash * 227 + x.GetHashCode();
+                hash = hash * 227 + y.GetHashCode();
+                hash = hash * 227 + z.GetHashCode();
+                return hash;
             }
-            return true;
         }
     }
 }

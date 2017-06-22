@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ASTutorial
 {
-    public static class Terrain
+    public static class EditTerrain
     {
         public static bool SetBlock(RaycastHit hit, Block block, bool adjacent = false)
         {
